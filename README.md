@@ -52,7 +52,12 @@ Open `http://localhost:8000` in your web browser.
 
 ---
 
-## Technical Specifications & Architecture
+Up Next..
+[] Custom Config Editor under Admin Panel, wont need to edit config.json manually risking breakage.
+
+---
+
+## Technical Specs & Architecture
 
 For deep-dive architecture specs, refer directly to the localized specification sheets:
 
