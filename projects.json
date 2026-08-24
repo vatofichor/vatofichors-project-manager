@@ -1,0 +1,97 @@
+{
+    "last_updated": "2026-08-24T23:31:48+00:00",
+    "settings": {
+        "title": "Simplex Workspace Dashboard",
+        "theme": "dark-retro"
+    },
+    "projects": [
+        {
+            "id": "Project 4",
+            "name": "Project 4",
+            "path": ".\/test_projects_repo\/Project 4",
+            "category": "project",
+            "status": "Inactive",
+            "in_scope": "",
+            "anti_scope": "",
+            "edge_risks": "",
+            "tasks": []
+        },
+        {
+            "id": "Project-3",
+            "name": "Project-3",
+            "path": ".\/test_projects_repo\/Project-3",
+            "category": "project",
+            "status": "Inactive",
+            "in_scope": "",
+            "anti_scope": "",
+            "edge_risks": "",
+            "tasks": []
+        },
+        {
+            "id": "SimplePunch-main",
+            "name": "SimplePunch-main",
+            "path": ".\/test_projects_repo\/SimplePunch-main",
+            "category": "project",
+            "status": "Inactive",
+            "in_scope": "",
+            "anti_scope": "",
+            "edge_risks": "",
+            "tasks": []
+        },
+        {
+            "id": "md2web-reader-main",
+            "name": "md2web-reader-main",
+            "path": ".\/test_projects_repo\/md2web-reader-main",
+            "category": "project",
+            "status": "Inactive",
+            "in_scope": "",
+            "anti_scope": "",
+            "edge_risks": "",
+            "tasks": []
+        },
+        {
+            "id": "Project 1",
+            "name": "Project 1",
+            "path": ".\/test_projects_repo_2\/Project 1",
+            "category": "project",
+            "status": "Inactive",
+            "in_scope": "",
+            "anti_scope": "",
+            "edge_risks": "",
+            "tasks": []
+        },
+        {
+            "id": "Project 2",
+            "name": "Project 2",
+            "path": ".\/test_projects_repo_2\/Project 2",
+            "category": "project",
+            "status": "Inactive",
+            "in_scope": "",
+            "anti_scope": "",
+            "edge_risks": "",
+            "tasks": []
+        },
+        {
+            "id": "test_projects_repo_2\/Project 4",
+            "name": "test_projects_repo_2\/Project 4",
+            "path": ".\/test_projects_repo_2\/Project 4",
+            "category": "project",
+            "status": "Inactive",
+            "in_scope": "",
+            "anti_scope": "",
+            "edge_risks": "",
+            "tasks": []
+        },
+        {
+            "id": "test_projects_repo_2\/SimplePunch-main",
+            "name": "test_projects_repo_2\/SimplePunch-main",
+            "path": ".\/test_projects_repo_2\/SimplePunch-main",
+            "category": "project",
+            "status": "Inactive",
+            "in_scope": "",
+            "anti_scope": "",
+            "edge_risks": "",
+            "tasks": []
+        }
+    ]
+}
