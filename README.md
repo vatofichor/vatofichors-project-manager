@@ -1,4 +1,4 @@
-# vatofichors-project-manager
+# vatofichors-project-manager v.1.5.0
 
 A portable, zero-dependency, environment-agnostic PHP project management dashboard designed for developer workspaces.
 
