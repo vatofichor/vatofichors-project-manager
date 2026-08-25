@@ -101,6 +101,36 @@ For deep-dive architecture specs, refer directly to the localized specification 
   Installer protection guards, data-preserving uninstallers (`uninstall.bat` / `uninstall.sh`), and portable PHP fallback unpacking.
 
 ---
+
+> [!NOTE]  
+> **Security Footnote for Developers**: This software is designed with the intention of being run locally using launcher scripts (`run-dashboard.bat` / `run-dashboard.sh`) on desktop Linux & Windows environments. If developers plan to host or expose this package publicly or on shared networks (`0.0.0.0`), additional security hardening, network access controls, reverse proxy authentication, and local command execution safeguards must be implemented.
+
+---
+
+## AI Model Integration & Data Management
+
+`vatofichors-project-manager` is fundamentally built around managing and maintaining the structural integrity, completeness, and state quality of `projects.json`.
+
+> [!TIP]
+> **AI Agent & LLM Guidance**:
+> Automated coding assistants and AI agents can be pointed directly to `README.md` and `projects.json` to immediately understand how to inspect, query, and manipulate a `vatofichors-project-manager` workspace installation effectively against parameters configured in `config.json`.
+
+---
+
+## Version 1.5.5 Release Updates
+
+- **Task Priority Levels & Neon Flares**: Retro priority selector (`-`, `1`, `2`, `3`, `*`, `!`, `$`) with neon flare badges and border color accents.
+- **Live Prepend & Focus Auto-Advance**: Completing a task prepends it to index 0 in DOM and storage while auto-advancing focus to the next task.
+- **Multi-Line Textareas & Key Handlers**: Auto-expanding task inputs supporting `SHIFT+ENTER` newlines and `ENTER` submission.
+- **Nested Sub-Task Tree Hierarchy**: Child sub-task trees with dashed connectors, `+ sub` prompts, and dedicated API management.
+- **Home Card Truncation & Top Toolbar Hotlinks**: 5-item max card truncation with `SEE MORE` expander and top toolbar `BACKUP NOW` hotlink.
+- **Native OS File Manager Launcher**: Non-blocking native desktop file manager hotlink launcher (`SAVES FOLDER ↗`) for `./saves/`.
+- **Multiple Sibling Custom Task Lists**: Uncapped additional project-specific custom task lists with individual `[✕] DELETE LIST` controls.
+- **Tier 5 Additional Task List Toolbar**: Dedicated `.additional-lists-toolbar` on project route featuring `+ CREATE TASK LIST` action.
+- **Task List Component Partial**: Extracted reusable partial `templates/task-list-partial.php` included across all task list views.
+
+---
+
 # Copyright (c) 2026:
 # vatofichor - Sebastian Mass     [>_<]
 # & Assisted By Gemini Antigravity /|\  

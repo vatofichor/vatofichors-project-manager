@@ -1,5 +1,5 @@
 {
-    "last_updated": "2026-08-24T23:31:48+00:00",
+    "last_updated": "2026-08-25T22:33:25+00:00",
     "settings": {
         "title": "Simplex Workspace Dashboard",
         "theme": "dark-retro"
@@ -14,18 +14,140 @@
             "in_scope": "",
             "anti_scope": "",
             "edge_risks": "",
-            "tasks": []
+            "tasks": [
+                {
+                    "id": "t_1787697171_462",
+                    "title": "Defrag the office water cooler",
+                    "completed": false,
+                    "created_at": "2026-08-25T22:32:51+00:00",
+                    "notes": "",
+                    "priority": "",
+                    "type": "task",
+                    "children": []
+                },
+                {
+                    "id": "t_1787697175_617",
+                    "title": "Calibrate the solar-powered flashlights",
+                    "completed": false,
+                    "created_at": "2026-08-25T22:32:55+00:00",
+                    "notes": "",
+                    "priority": "",
+                    "type": "task",
+                    "children": []
+                },
+                {
+                    "id": "t_1787697179_851",
+                    "title": "Alphabetize the digital trash bin",
+                    "completed": false,
+                    "created_at": "2026-08-25T22:32:59+00:00",
+                    "notes": "",
+                    "priority": "",
+                    "type": "task",
+                    "children": []
+                },
+                {
+                    "id": "t_1787697183_677",
+                    "title": "File a noise complaint with the quiet room",
+                    "completed": false,
+                    "created_at": "2026-08-25T22:33:03+00:00",
+                    "notes": "",
+                    "priority": "",
+                    "type": "task",
+                    "children": []
+                },
+                {
+                    "id": "t_1787697186_762",
+                    "title": "Audit the air quality of the vacuum cleaner bags",
+                    "completed": false,
+                    "created_at": "2026-08-25T22:33:06+00:00",
+                    "notes": "",
+                    "priority": "",
+                    "type": "task",
+                    "children": []
+                },
+                {
+                    "id": "t_1787697191_383",
+                    "title": "Update the firmware on the manual staplers",
+                    "completed": false,
+                    "created_at": "2026-08-25T22:33:11+00:00",
+                    "notes": "",
+                    "priority": "",
+                    "type": "task",
+                    "children": []
+                },
+                {
+                    "id": "t_1787697195_241",
+                    "title": "Polish the anti-glare coating on the whiteboards",
+                    "completed": false,
+                    "created_at": "2026-08-25T22:33:15+00:00",
+                    "notes": "",
+                    "priority": "",
+                    "type": "task",
+                    "children": []
+                }
+            ],
+            "tags": [
+                "APPS"
+            ]
         },
         {
-            "id": "Project-3",
-            "name": "Project-3",
-            "path": ".\/test_projects_repo\/Project-3",
+            "id": "Project-3\/Sub-Project 1",
+            "name": "Sub-Project 1",
+            "path": ".\/test_projects_repo\/Project-3\/Sub-Project 1",
             "category": "project",
             "status": "Inactive",
             "in_scope": "",
             "anti_scope": "",
             "edge_risks": "",
-            "tasks": []
+            "tasks": [
+                {
+                    "id": "t_1787697198_645",
+                    "title": "Draft a budget proposal for next quarter's daylight saving time",
+                    "completed": false,
+                    "created_at": "2026-08-25T22:33:18+00:00",
+                    "notes": "",
+                    "priority": "",
+                    "type": "task",
+                    "children": []
+                },
+                {
+                    "id": "t_1787697201_481",
+                    "title": "Re-index the physical paper shredder's search database",
+                    "completed": false,
+                    "created_at": "2026-08-25T22:33:21+00:00",
+                    "notes": "",
+                    "priority": "",
+                    "type": "task",
+                    "children": []
+                },
+                {
+                    "id": "t_1787697205_774",
+                    "title": "Schedule a emergency dry run for the cloud backup system's power outage",
+                    "completed": false,
+                    "created_at": "2026-08-25T22:33:25+00:00",
+                    "notes": "",
+                    "priority": "",
+                    "type": "task",
+                    "children": []
+                }
+            ],
+            "tags": [
+                "TOOLS"
+            ]
+        },
+        {
+            "id": "Project-3\/Sub-Project 2",
+            "name": "Sub-Project 2",
+            "path": ".\/test_projects_repo\/Project-3\/Sub-Project 2",
+            "category": "project",
+            "status": "Inactive",
+            "in_scope": "",
+            "anti_scope": "",
+            "edge_risks": "",
+            "tasks": [],
+            "tags": [
+                "LIBRARIES"
+            ]
         },
         {
             "id": "SimplePunch-main",
@@ -36,7 +158,11 @@
             "in_scope": "",
             "anti_scope": "",
             "edge_risks": "",
-            "tasks": []
+            "tasks": [],
+            "tags": [
+                "PACKAGES",
+                "APPS"
+            ]
         },
         {
             "id": "md2web-reader-main",
@@ -47,7 +173,11 @@
             "in_scope": "",
             "anti_scope": "",
             "edge_risks": "",
-            "tasks": []
+            "tasks": [],
+            "tags": [
+                "TEMPLATES",
+                "TOOLS"
+            ]
         },
         {
             "id": "Project 1",
@@ -58,7 +188,11 @@
             "in_scope": "",
             "anti_scope": "",
             "edge_risks": "",
-            "tasks": []
+            "tasks": [],
+            "tags": [
+                "META",
+                "LIBRARIES"
+            ]
         },
         {
             "id": "Project 2",
@@ -69,7 +203,11 @@
             "in_scope": "",
             "anti_scope": "",
             "edge_risks": "",
-            "tasks": []
+            "tasks": [],
+            "tags": [
+                "OPEN SOURCE",
+                "PACKAGES"
+            ]
         },
         {
             "id": "test_projects_repo_2\/Project 4",
@@ -80,7 +218,11 @@
             "in_scope": "",
             "anti_scope": "",
             "edge_risks": "",
-            "tasks": []
+            "tasks": [],
+            "tags": [
+                "PROPRIETARY",
+                "TEMPLATES"
+            ]
         },
         {
             "id": "test_projects_repo_2\/SimplePunch-main",
@@ -91,7 +233,10 @@
             "in_scope": "",
             "anti_scope": "",
             "edge_risks": "",
-            "tasks": []
+            "tasks": [],
+            "tags": [
+                "OPEN SOURCE"
+            ]
         }
     ]
 }
