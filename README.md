@@ -1,4 +1,4 @@
-# vatofichors-project-manager v.1.5.0
+# vatofichors-project-manager
 
 A portable, zero-dependency, environment-agnostic PHP project management dashboard designed for developer workspaces.
 
@@ -21,6 +21,35 @@ A portable, zero-dependency, environment-agnostic PHP project management dashboa
   - Interactive project tag management grid (`TAG MANAGER`).
   - One-click timestamped `projects.json` backups and restoration tools.
 - **Fast Search & Visibility Controls**: Filter cards in real-time by search queries, category tags, or status, with a global textarea toggle (`LESS TEXT / MORE TEXT`).
+
+---
+
+## Screenshots
+
+### Home Dashboard
+![Home Route - Project Dashboard](dev/screenshots/home-route-test-projects-loaded.png)
+*Home route with active projects loaded (Desktop View)*
+
+![Home Route - Tablet View](dev/screenshots/home-route-test-projects-loaded-tablet-mode.png)
+*Home route responsive layout (Tablet View)*
+
+---
+
+### Project Detail & Task Tracking
+![Project Detail View](dev/screenshots/project-route.png)
+*Project detail view displaying scope, anti-scope, and edge risk tracking*
+
+![Project Task Checklist](dev/screenshots/project-route-task-list.png)
+*Interactive project task list and real-time completion status*
+
+---
+
+### Admin Workspace & Pool Scanner
+![Admin Pool Projects Table](dev/screenshots/admin-route-pool-projects-table.png)
+*Admin workspace directory pool scanner and project import suite*
+
+![Admin Pool Projects Table - Tablet View](dev/screenshots/admin-route-pool-projects-table-tablet-mode.png)
+*Admin workspace directory pool scanner (Tablet View)*
 
 ---
 
