@@ -1,3 +1,5 @@
+Timestamp: 2026-08-25T01:49:44Z
+
 # Data Schema & Model Specification (`data_schema_and_model_spec.md`)
 
 This specification defines the JSON data storage schema, immutable status hierarchy rules, persistence write mechanics, backup file specifications, client storage mechanics, and complete method contracts for `lib/ProjectsModel.php`.

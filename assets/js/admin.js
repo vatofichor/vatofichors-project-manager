@@ -424,6 +424,203 @@ async function runRestoreProjectsJsonAction() {
     }
 }
 
+async function loadAdminConfigEditor() {
+    const vp = document.getElementById('adminViewport');
+    const sub = document.getElementById('adminSubActions');
+    if (!vp) return;
+
+    if (sub) {
+        sub.innerHTML = `
+            <button onclick="submitAdminConfigForm()" class="action-btn" style="padding: 2px 8px; font-size: 11px;">UPDATE CONFIG</button>
+            <button onclick="resetAdminConfigDefault()" class="filter-btn" style="padding: 2px 8px; font-size: 11px; color: var(--accent-red); border-color: var(--accent-red);">RESET TO DEFAULT</button>
+        `;
+    }
+
+    vp.innerHTML = '<pre>Loading configuration data...</pre>';
+
+    try {
+        const res = await apiCall({ action: 'get_config' });
+        if (!res || !res.success || !res.config) {
+            throw new Error(res.error || 'Failed to load configuration.');
+        }
+        renderConfigEditorForm(res.config);
+    } catch (err) {
+        vp.innerHTML = `<pre style="color:var(--accent-red);">[ERROR] ${escapeHtml(err.message)}</pre>`;
+    }
+}
+
+function renderConfigEditorForm(cfg) {
+    const vp = document.getElementById('adminViewport');
+    if (!vp) return;
+
+    const targetRoots = Array.isArray(cfg.target_root_dir) ? cfg.target_root_dir.join('\n') : (cfg.target_root_dir || '');
+    const categories = Array.isArray(cfg.categories) ? cfg.categories.join('\n') : (cfg.categories || '');
+    const statuses = Array.isArray(cfg.statuses) ? cfg.statuses.join('\n') : (cfg.statuses || '');
+    const ignoreDirs = Array.isArray(cfg.ignore_dirs) ? cfg.ignore_dirs.join('\n') : (cfg.ignore_dirs || '');
+
+    let html = `<div class="admin-config-editor" style="padding: 6px; font-family: var(--font-mono); font-size: 11px;">`;
+    html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:6px; border-bottom:1px dashed var(--border-color);">`;
+    html += `<strong style="color:var(--accent-teal);">CONFIG.JSON EDITOR</strong>`;
+    html += `<span style="color:var(--text-muted); font-size:10px;">Edit configuration parameters below. Click UPDATE CONFIG to apply.</span>`;
+    html += `</div>`;
+
+    html += `<form id="adminConfigForm" onsubmit="event.preventDefault(); submitAdminConfigForm();" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">`;
+
+    html += `<div style="display:flex; flex-direction:column; gap:6px;">`;
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">App Name (app_name):</label>`;
+    html += `<input type="text" id="cfg_app_name" value="${escapeHtml(cfg.app_name || '')}" class="add-task-input" style="width:100%;"></div>`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Homepage Title (title):</label>`;
+    html += `<input type="text" id="cfg_title" value="${escapeHtml(cfg.title || '')}" class="add-task-input" style="width:100%;"></div>`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Entity Subtitle (subtitle):</label>`;
+    html += `<input type="text" id="cfg_subtitle" value="${escapeHtml(cfg.subtitle || '')}" class="add-task-input" style="width:100%;"></div>`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Logo Emoticon (logo_emoticon):</label>`;
+    html += `<input type="text" id="cfg_logo_emoticon" value="${escapeHtml(cfg.logo_emoticon || '')}" class="add-task-input" style="width:100%;"></div>`;
+
+    html += `<div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">`;
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Logo Color:</label>`;
+    html += `<input type="text" id="cfg_logo_color" value="${escapeHtml(cfg.logo_color || '')}" class="add-task-input" style="width:100%;"></div>`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Border Color:</label>`;
+    html += `<input type="text" id="cfg_border_color" value="${escapeHtml(cfg.border_color || '')}" class="add-task-input" style="width:100%;"></div>`;
+    html += `</div>`;
+
+    html += `<div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px;">`;
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Accent Theme Color:</label>`;
+    html += `<input type="text" id="cfg_accent_theme" value="${escapeHtml(cfg.accent_theme || '')}" class="add-task-input" style="width:100%;"></div>`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Theme Hover Color:</label>`;
+    html += `<input type="text" id="cfg_theme_hover" value="${escapeHtml(cfg.theme_hover || '')}" class="add-task-input" style="width:100%;"></div>`;
+    html += `</div>`;
+
+    html += `<div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px;">`;
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Version:</label>`;
+    html += `<input type="text" id="cfg_version" value="${escapeHtml(cfg.version || '')}" class="add-task-input" style="width:100%;"></div>`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Theme Name:</label>`;
+    html += `<input type="text" id="cfg_theme" value="${escapeHtml(cfg.theme || '')}" class="add-task-input" style="width:100%;"></div>`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Scan Depth:</label>`;
+    html += `<input type="number" id="cfg_scan_depth" min="1" max="10" value="${escapeHtml(cfg.scan_depth || 3)}" class="add-task-input" style="width:100%;"></div>`;
+    html += `</div>`;
+
+    html += `<div style="margin-top:4px;"><label style="cursor:pointer; display:flex; align-items:center; gap:6px;">`;
+    html += `<input type="checkbox" id="cfg_ignore_hidden_dirs" ${cfg.ignore_hidden_dirs !== false ? 'checked' : ''}>`;
+    html += `<span style="color:#fff;">Ignore Hidden Directories (ignore_hidden_dirs)</span>`;
+    html += `</label></div>`;
+
+    html += `</div>`;
+
+    html += `<div style="display:flex; flex-direction:column; gap:6px;">`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Target Root Directories (one per line):</label>`;
+    html += `<textarea id="cfg_target_root_dir" rows="3" class="task-notes-input" style="width:100%; font-family:var(--font-mono); resize:vertical;">${escapeHtml(targetRoots)}</textarea></div>`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Categories (one per line):</label>`;
+    html += `<textarea id="cfg_categories" rows="3" class="task-notes-input" style="width:100%; font-family:var(--font-mono); resize:vertical;">${escapeHtml(categories)}</textarea></div>`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Statuses (one per line):</label>`;
+    html += `<textarea id="cfg_statuses" rows="3" class="task-notes-input" style="width:100%; font-family:var(--font-mono); resize:vertical;">${escapeHtml(statuses)}</textarea></div>`;
+
+    html += `<div><label style="color:var(--text-muted); display:block; margin-bottom:2px;">Ignored Directory Patterns (one per line):</label>`;
+    html += `<textarea id="cfg_ignore_dirs" rows="4" class="task-notes-input" style="width:100%; font-family:var(--font-mono); resize:vertical;">${escapeHtml(ignoreDirs)}</textarea></div>`;
+
+    html += `</div>`;
+
+    html += `</form>`;
+    html += `<div id="configStatusMessage" style="margin-top:8px;"></div>`;
+    html += `</div>`;
+
+    vp.innerHTML = html;
+}
+
+function parseTextareaLines(id) {
+    const el = document.getElementById(id);
+    if (!el) return [];
+    return el.value
+        .split('\n')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+}
+
+async function submitAdminConfigForm() {
+    const statusMsg = document.getElementById('configStatusMessage');
+    if (statusMsg) statusMsg.innerHTML = '<span style="color:var(--accent-amber);">Saving configuration...</span>';
+
+    const newConfig = {
+        app_name: document.getElementById('cfg_app_name')?.value?.trim() || '',
+        title: document.getElementById('cfg_title')?.value?.trim() || '',
+        subtitle: document.getElementById('cfg_subtitle')?.value?.trim() || '',
+        logo_emoticon: document.getElementById('cfg_logo_emoticon')?.value?.trim() || '[>_<]',
+        logo_color: document.getElementById('cfg_logo_color')?.value?.trim() || '#00f0ff',
+        border_color: document.getElementById('cfg_border_color')?.value?.trim() || '#2b303c',
+        accent_theme: document.getElementById('cfg_accent_theme')?.value?.trim() || '#39c5bb',
+        theme_hover: document.getElementById('cfg_theme_hover')?.value?.trim() || '#4ae0d5',
+        version: document.getElementById('cfg_version')?.value?.trim() || '1.5.0',
+        theme: document.getElementById('cfg_theme')?.value?.trim() || 'dark-retro',
+        scan_depth: parseInt(document.getElementById('cfg_scan_depth')?.value, 10) || 3,
+        ignore_hidden_dirs: document.getElementById('cfg_ignore_hidden_dirs')?.checked ?? true,
+        target_root_dir: parseTextareaLines('cfg_target_root_dir'),
+        categories: parseTextareaLines('cfg_categories'),
+        statuses: parseTextareaLines('cfg_statuses'),
+        ignore_dirs: parseTextareaLines('cfg_ignore_dirs')
+    };
+
+    try {
+        const res = await apiCall({
+            action: 'update_config',
+            config: newConfig
+        });
+
+        if (res && res.success) {
+            if (res.config) {
+                renderConfigEditorForm(res.config);
+                const newStatusMsg = document.getElementById('configStatusMessage');
+                if (newStatusMsg) {
+                    newStatusMsg.innerHTML = `<span style="color:var(--accent-green); font-weight:bold;">[SUCCESS] Configuration saved to config.json successfully!</span>`;
+                }
+            } else if (statusMsg) {
+                statusMsg.innerHTML = `<span style="color:var(--accent-green); font-weight:bold;">[SUCCESS] Configuration saved to config.json successfully!</span>`;
+            }
+        } else {
+            if (statusMsg) {
+                statusMsg.innerHTML = `<span style="color:var(--accent-red); font-weight:bold;">[ERROR] ${escapeHtml(res.error || 'Failed to save configuration.')}</span>`;
+            }
+        }
+    } catch (err) {
+        if (statusMsg) {
+            statusMsg.innerHTML = `<span style="color:var(--accent-red); font-weight:bold;">[ERROR] ${escapeHtml(err.message)}</span>`;
+        }
+    }
+}
+
+async function resetAdminConfigDefault() {
+    const confirmation = prompt("Are you sure you want to reset config.json to default installer values?\nType 'yes' to authorize reset:");
+    if (!confirmation || confirmation.trim().toLowerCase() !== 'yes') {
+        return;
+    }
+
+    const vp = document.getElementById('adminViewport');
+    if (vp) vp.innerHTML = '<pre>Resetting config.json to installer defaults...</pre>';
+
+    try {
+        const res = await apiCall({ action: 'reset_config' });
+        if (res && res.success && res.config) {
+            renderConfigEditorForm(res.config);
+            const statusMsg = document.getElementById('configStatusMessage');
+            if (statusMsg) {
+                statusMsg.innerHTML = `<span style="color:var(--accent-green); font-weight:bold;">[SUCCESS] Configuration reset to default installer values!</span>`;
+            }
+        } else {
+            if (vp) vp.innerHTML = `<pre style="color:var(--accent-red);">[ERROR] ${escapeHtml(res.error || 'Failed to reset configuration.')}</pre>`;
+        }
+    } catch (err) {
+        if (vp) vp.innerHTML = `<pre style="color:var(--accent-red);">[ERROR] ${escapeHtml(err.message)}</pre>`;
+    }
+}
+
 function escapeHtml(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }

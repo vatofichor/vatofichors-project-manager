@@ -1,3 +1,5 @@
+Timestamp: 2026-08-25T01:49:44Z
+
 # Pool Scanner & Collision Disambiguation Specification (`pool_scanner_and_collision_spec.md`)
 
 This specification defines the multi-level directory pool scanner architecture, path sanitization rules, ignore filters, metadata indexing, and the **Dirpath Root Traversal Collision Disambiguation Algorithm** for `vatofichors-project-manager`.

@@ -1,3 +1,5 @@
+Timestamp: 2026-08-25T01:49:44Z
+
 # Routing & Module MVC Architecture Specification (`routing_and_module_mvc_spec.md`)
 
 This specification defines the architectural rules, entry point routing contracts, module sub-router dispatching, and API handling conventions for the `vatofichors-project-manager` web application.

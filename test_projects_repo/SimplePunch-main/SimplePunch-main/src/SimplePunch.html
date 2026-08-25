@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SimplePunch — Time Clock</title>
+<meta name="description" content="SimplePunch: a zero-dependency, browser-based punch clock. Drop and open. No server required.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+/* ==========================================================================
+   TOKEN LAYER
+   ========================================================================== */
+:root {
+  --bg-deep:          #0f172a;
+  --bg-surface:       #1e293b;
+  --bg-elevated:      #334155;
+  --brand-bg-candy:   #48445e;
+
+  --primary:          #38bdf8;
+  --secondary:        #818cf8;
+  --accent:           #c084fc;
+  --primary-glow:     rgba(56, 189, 248, 0.4);
+
+  --glass-bg:         rgba(30, 41, 59, 0.7);
+  --glass-border:     rgba(255, 255, 255, 0.1);
+
+  --text-primary:     #f8fafc;
+  --text-secondary:   #94a3b8;
+  --text-muted:       #64748b;
+
+  --success:          #4ade80;
+  --warning:          #fbbf24;
+  --error:            #f87171;
+
+  --border:           rgba(148, 163, 184, 0.1);
+
+  --shadow-sm:  0 1px 3px 0 rgba(0,0,0,0.1);
+  --shadow-md:  0 3px 6px -1px rgba(0,0,0,0.1), 0 3px 3px -1px rgba(0,0,0,0.06);
+  --shadow-lg:  0 9px 13px -3px rgba(0,0,0,0.1), 0 3px 6px -3px rgba(0,0,0,0.05);
+  --shadow-xl:  0 25px 50px -12px rgba(0,0,0,0.5);
+
+  --font-main:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-headers: 'Plus Jakarta Sans', sans-serif;
+  --font-mono:    'Fira Code', 'Cascadia Code', Consolas, monospace;
+
+  --radius: 13px;
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  font-family: var(--font-main);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  background-color: var(--brand-bg-candy);
+  background-image:
+    radial-gradient(at 0% 0%,   rgba(56,189,248,0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(129,140,248,0.15) 0px, transparent 50%);
+  color: var(--text-primary);
+}
+
+/* ==========================================================================
+   LAYOUT SHELL
+   ========================================================================== */
+.app-shell {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   BRAND HEADER
+   ========================================================================== */
+.brand-header {
+  text-align: center;
+  padding: 10px 0 4px;
+}
+
+.brand-header h1 {
+  font-family: var(--font-headers);
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.brand-header p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 2px 0 0;
+}
+
+/* ==========================================================================
+   TOOLBAR PANEL
+   ========================================================================== */
+.toolbar {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.toolbar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--primary), var(--secondary), var(--accent));
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   TOOL-SMALL-BUTTON TIER
+   ========================================================================== */
+.tsb {
+  height: 39px;
+  min-height: 44px;
+  padding: 0 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--glass-border);
+  border-radius: 9px;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tsb:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 12px var(--primary-glow);
+}
+
+.tsb:active { transform: translateY(0); }
+
+/* Clock-In: green tint */
+.tsb-in {
+  background: rgba(74, 222, 128, 0.15);
+  border-color: rgba(74, 222, 128, 0.3);
+  color: var(--success);
+}
+.tsb-in:hover {
+  background: var(--success);
+  color: #0f172a;
+  box-shadow: 0 3px 12px rgba(74, 222, 128, 0.4);
+}
+
+/* Clock-Out: red tint */
+.tsb-out {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: var(--error);
+}
+.tsb-out:hover {
+  background: var(--error);
+  color: #fff;
+  box-shadow: 0 3px 12px rgba(248, 113, 113, 0.4);
+}
+
+/* ==========================================================================
+   FILE SELECT
+   ========================================================================== */
+#fileSelect {
+  height: 39px;
+  min-height: 44px;
+  padding: 0 10px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  max-width: 180px;
+}
+
+#fileSelect:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+/* ==========================================================================
+   TOTAL DISPLAY
+   ========================================================================== */
+.total-display {
+  font-family: var(--font-headers);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.total-display span {
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   TABLE PANEL
+   ========================================================================== */
+.table-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead tr { background: var(--bg-elevated); }
+
+th {
+  padding: 10px 16px;
+  text-align: left;
+  font-family: var(--font-headers);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--primary);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+td {
+  padding: 9px 16px;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: rgba(56, 189, 248, 0.04); }
+tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+tbody tr:nth-child(even):hover { background: rgba(56, 189, 248, 0.04); }
+
+/* Row index column */
+td:first-child {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  width: 36px;
+  text-align: center;
+}
+
+/* Delete column */
+td:last-child {
+  width: 44px;
+  text-align: center;
+  padding: 6px 8px;
+}
+
+/* ==========================================================================
+   IN/OUT BADGE
+   ========================================================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-headers);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 9px;
+  border-radius: 6px;
+  min-width: 42px;
+}
+
+.badge-in {
+  background: rgba(74, 222, 128, 0.15);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  color: var(--success);
+}
+
+.badge-out {
+  background: rgba(248, 113, 113, 0.15);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  color: var(--error);
+}
+
+.badge-unknown {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  color: var(--warning);
+  font-size: 0.7rem;
+}
+
+/* ==========================================================================
+   ROW ACTION BUTTONS (delete + edit)
+   ========================================================================== */
+.btn-delete,
+.btn-edit {
+  width: 28px;
+  height: 28px;
+  min-height: unset;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  line-height: 1;
+}
+
+.btn-delete:hover {
+  background: rgba(248, 113, 113, 0.15);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: var(--error);
+}
+
+.btn-edit:hover {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.3);
+  color: var(--primary);
+}
+
+.btn-delete:active,
+.btn-edit:active { transform: scale(0.92); }
+
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ==========================================================================
+   INLINE TIMESTAMP EDIT
+   ========================================================================== */
+.ts-display { display: inline; }
+
+.ts-edit {
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+
+tr.editing .ts-display { display: none; }
+tr.editing .ts-edit    { display: inline-flex; }
+
+.ts-input {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  background: var(--bg-deep);
+  border: 1px solid var(--primary);
+  border-radius: 7px;
+  padding: 3px 9px;
+  height: 28px;
+  min-height: unset;
+  width: 190px;
+  max-width: 100%;
+  box-shadow: 0 0 0 2px var(--primary-glow);
+  outline: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.ts-input:focus {
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.btn-confirm {
+  width: 28px;
+  height: 28px;
+  min-height: unset;
+  padding: 0;
+  background: rgba(74, 222, 128, 0.15);
+  border: 1px solid rgba(74, 222, 128, 0.4);
+  border-radius: 6px;
+  color: var(--success);
+  font-size: 0.88rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+  line-height: 1;
+}
+
+.btn-confirm:hover {
+  background: var(--success);
+  color: #0f172a;
+}
+
+.btn-confirm:active { transform: scale(0.92); }
+
+/* ==========================================================================
+   EMPTY STATE
+   ========================================================================== */
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+footer {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+footer a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+footer a:hover { color: var(--accent); }
+
+/* ==========================================================================
+   MOBILE — ≤ 600px
+   ========================================================================== */
+@media (max-width: 600px) {
+  .app-shell { padding: 12px 10px 36px; gap: 12px; }
+  .brand-header h1 { font-size: 1.5rem; }
+  .toolbar { padding: 10px 12px; }
+  .toolbar-left, .toolbar-right { width: 100%; justify-content: flex-start; }
+  .tsb { min-height: 44px; }
+  #fileSelect { max-width: 100%; width: 100%; flex: 1; }
+}
+/* ==========================================================================
+   ACCORDION — CF-V2 pure CSS checkbox-hack
+   ========================================================================== */
+@keyframes cf-fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.accordion { margin: 0; clear: both; }
+
+.accordion-button { display: none; }
+
+.accordion-header {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary);
+  padding: 12px 20px;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--font-headers);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.25s ease, border-color 0.25s ease;
+  min-height: 48px;
+  user-select: none;
+}
+
+.accordion-header:hover {
+  background: var(--bg-elevated);
+  border-color: var(--primary);
+}
+
+.accordion-header .acc-arrow {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+
+.accordion-button:checked + .accordion-header { border-color: var(--primary); }
+.accordion-button:checked + .accordion-header .acc-arrow { transform: rotate(180deg); }
+
+.accordion-content {
+  display: none;
+  padding: 20px 24px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--glass-border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  animation: cf-fadeIn 0.25s ease-out;
+}
+
+.accordion-button:checked + .accordion-header + .accordion-content { display: block; }
+
+/* How-to list inside accordion */
+.how-to-steps {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.how-to-steps li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.how-to-steps .step-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--glass-border);
+  color: var(--primary);
+  font-family: var(--font-headers);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.how-to-steps strong { color: var(--text-primary); font-weight: 600; }
+
+.how-to-note {
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: rgba(251, 191, 36, 0.08);
+  border-left: 3px solid var(--warning);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.how-to-note strong { color: var(--warning); }
+
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- Brand -->
+  <div class="brand-header">
+    <h1>SimplePunch</h1>
+    <p>Zero-dependency browser punch clock</p>
+  </div>
+
+  <!-- Toolbar -->
+  <header class="toolbar" role="banner">
+    <div class="toolbar-left">
+      <button class="tsb" id="pickDir" title="Load working folder">📁 Load Folder</button>
+      <select id="fileSelect" aria-label="Active punch file"></select>
+      <button class="tsb" id="newFile" title="Create new daily punch file">+ New File</button>
+    </div>
+    <div class="toolbar-right">
+      <button class="tsb tsb-in"  id="in"  title="Clock In">⬇ Clock In</button>
+      <button class="tsb tsb-out" id="out" title="Clock Out">⬆ Clock Out</button>
+      <div class="total-display">Time: <span id="total">0.00</span> hrs</div>
+    </div>
+  </header>
+
+  <!-- Punch Log Table -->
+  <div class="table-panel" role="main">
+    <div class="table-scroll">
+      <table aria-label="Punch log">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Type</th>
+            <th>Timestamp</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr><td colspan="4" class="empty-state">Select a folder and file to begin.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- How to Use Accordion -->
+  <div class="accordion">
+    <input type="checkbox" class="accordion-button" id="acc-how-to-use">
+    <label class="accordion-header" for="acc-how-to-use">
+      <span>📖 How to Use</span>
+      <span class="acc-arrow">&#9660;</span>
+    </label>
+    <div class="accordion-content">
+      <ol class="how-to-steps">
+        <li>
+          <span class="step-num">1</span>
+          <span><strong>Load Folder</strong> — Click <strong>📁 Load Folder</strong> and pick the directory on your machine where punch files are stored. This grants the app read/write access for that session.</span>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <span><strong>Select a file</strong> — The dropdown populates with all <code>.txt</code> files in that folder. Pick the one you want to work with. The punch log will load immediately.</span>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <span><strong>Create a new file</strong> — Click <strong>+ New File</strong> to create a fresh log named with today's date (e.g. <code>2026-06-19.txt</code>). After creating, click <strong>📁 Load Folder</strong> again so the new file appears in the dropdown.</span>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <span><strong>Clock In / Clock Out</strong> — Use the <strong>⬇ Clock In</strong> and <strong>⬆ Clock Out</strong> buttons to record punches. Each punch is written directly to the file. Total hours update live.</span>
+        </li>
+        <li>
+          <span class="step-num">5</span>
+          <span><strong>Edit a timestamp</strong> — Click the <strong>✏</strong> pencil icon on any row to correct a timestamp inline. Press <strong>Enter</strong> or <strong>✓</strong> to save, <strong>Escape</strong> or <strong>✕</strong> to cancel. Format: <code>YYYY-MM-DD HH:MM:SS</code>.</span>
+        </li>
+        <li>
+          <span class="step-num">6</span>
+          <span><strong>Delete an entry</strong> — Click the <strong>🗑</strong> trash icon to remove a row. The file is rewritten immediately. Use this to correct mistakes — order matters for accurate totals.</span>
+        </li>
+      </ol>
+      <div class="how-to-note">
+        <strong>⚠ Reload after file changes.</strong> This app is serverless — the folder dropdown is a one-time snapshot. After creating a new file or switching to a different folder, click <strong>📁 Load Folder</strong> again to refresh the file list.
+      </div>
+    </div>
+  </div>
+
+
+  <footer>
+    &copy; 2026 vatofichor (Sebastian Mass). Released under the
+    <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.
+  </footer>
+
+</div><!-- /.app-shell -->
+
+<script>
+let dirHandle  = null;
+let fileHandle = null;
+let lines      = []; // raw stored strings, e.g. "IN 2026-06-19 21:43:32"
+
+const fileSelect = document.getElementById('fileSelect');
+
+/* ==========================================================================
+   HELPERS
+   ========================================================================== */
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function formatTS(d = new Date()) {
+  return (
+    d.getFullYear()         + '-' +
+    pad(d.getMonth() + 1)   + '-' +
+    pad(d.getDate())        + ' ' +
+    pad(d.getHours())       + ':' +
+    pad(d.getMinutes())     + ':' +
+    pad(d.getSeconds())
+  );
+}
+
+// Parse a stored line into { dir, ts }
+// Format: "IN 2026-06-19 21:43:32" | "OUT 2026-06-19 21:43:32"
+function parseLine(raw) {
+  const trimmed = raw.trim();
+  if (trimmed.startsWith('IN ') || trimmed.startsWith('OUT ')) {
+    const spaceIdx = trimmed.indexOf(' ');
+    return { dir: trimmed.slice(0, spaceIdx), ts: trimmed.slice(spaceIdx + 1).trim() };
+  }
+  return { dir: null, ts: trimmed };
+}
+
+// Parse "YYYY-MM-DD HH:MM:SS" into a Date
+function parseTS(s) {
+  const [datePart, timePart] = s.split(' ');
+  const [year, month, day]  = datePart.split('-').map(Number);
+  const [H, M, S]           = timePart.split(':').map(Number);
+  return new Date(year, month - 1, day, H, M, S || 0);
+}
+
+/* ==========================================================================
+   FILE HANDLING
+   ========================================================================== */
+
+document.getElementById('pickDir').onclick = async () => {
+  dirHandle = await window.showDirectoryPicker();
+  loadFileList();
+};
+
+async function loadFileList() {
+  fileSelect.innerHTML = '';
+  for await (const [name] of dirHandle.entries()) {
+    if (name.endsWith('.txt')) {
+      const o = document.createElement('option');
+      o.value = o.textContent = name;
+      fileSelect.appendChild(o);
+    }
+  }
+  if (fileSelect.value) loadFile(fileSelect.value);
+}
+
+fileSelect.onchange = e => loadFile(e.target.value);
+
+async function loadFile(name) {
+  fileHandle = await dirHandle.getFileHandle(name);
+  const file = await fileHandle.getFile();
+  lines = (await file.text()).trim().split('\n').filter(Boolean);
+  render();
+}
+
+document.getElementById('newFile').onclick = async () => {
+  if (!dirHandle) return alert('Select a folder first.');
+  const name = new Date().toISOString().slice(0, 10) + '.txt';
+  fileHandle = await dirHandle.getFileHandle(name, { create: true });
+  const o = document.createElement('option');
+  o.value = o.textContent = name;
+  fileSelect.appendChild(o);
+  fileSelect.value = name;
+  lines = [];
+  render();
+};
+
+/* ==========================================================================
+   FILE WRITE UTILITIES
+   ========================================================================== */
+
+/** Append a single line to the end of the file. */
+async function appendLine(rawLine) {
+  const file     = await fileHandle.getFile();
+  const writable = await fileHandle.createWritable({ keepExistingData: true });
+  await writable.seek(file.size);
+  await writable.write(rawLine + '\n');
+  await writable.close();
+}
+
+/** Truncate and rewrite every line in `lines[]` (used after a delete). */
+async function rewriteFile() {
+  const writable = await fileHandle.createWritable({ keepExistingData: false });
+  await writable.write(lines.join('\n') + (lines.length ? '\n' : ''));
+  await writable.close();
+}
+
+/* ==========================================================================
+   PUNCHING
+   ========================================================================== */
+
+async function punch(dir) {
+  if (!fileHandle) return alert('Select a file first.');
+  const raw = dir + ' ' + formatTS();
+  await appendLine(raw);
+  lines.push(raw);
+  render();
+}
+
+document.getElementById('in').onclick  = () => punch('IN');
+document.getElementById('out').onclick = () => punch('OUT');
+
+/* ==========================================================================
+   DELETE LINE
+   ========================================================================== */
+
+async function deleteLine(index) {
+  lines.splice(index, 1);
+  await rewriteFile();
+  render();
+}
+
+/* ==========================================================================
+   INLINE EDIT
+   ========================================================================== */
+
+function startEdit(index) {
+  const tr = document.querySelector(`tr[data-index="${index}"]`);
+  if (!tr) return;
+  tr.classList.add('editing');
+  const input = tr.querySelector('.ts-input');
+  input.focus();
+  input.select();
+
+  // Flip pencil → cancel (X)
+  const pencil = tr.querySelector('.btn-edit');
+  pencil.textContent = '✕';
+  pencil.title = 'Cancel edit';
+  pencil.onclick = () => cancelEdit(index);
+}
+
+function cancelEdit(index) {
+  const tr = document.querySelector(`tr[data-index="${index}"]`);
+  if (!tr) return;
+  tr.classList.remove('editing');
+
+  // Restore input value to original
+  const { ts } = parseLine(lines[index]);
+  tr.querySelector('.ts-input').value = ts;
+
+  const pencil = tr.querySelector('.btn-edit');
+  pencil.textContent = '✏';
+  pencil.title = 'Edit timestamp';
+  pencil.onclick = () => startEdit(index);
+}
+
+async function saveEdit(index) {
+  const tr = document.querySelector(`tr[data-index="${index}"]`);
+  if (!tr) return;
+
+  const input   = tr.querySelector('.ts-input');
+  const newTs   = input.value.trim();
+
+  // Basic sanity check — must parse to a valid date
+  const testDate = parseTS(newTs);
+  if (isNaN(testDate.getTime())) {
+    input.style.borderColor = 'var(--error)';
+    input.style.boxShadow   = '0 0 0 3px rgba(248,113,113,0.3)';
+    input.title = 'Invalid format. Expected: YYYY-MM-DD HH:MM:SS';
+    return;
+  }
+
+  // Rebuild line preserving direction prefix
+  const { dir } = parseLine(lines[index]);
+  lines[index]  = (dir ? dir + ' ' : '') + newTs;
+
+  await rewriteFile();
+  render();
+}
+
+/* ==========================================================================
+   RENDER
+   ========================================================================== */
+
+function render() {
+  const tbody = document.getElementById('rows');
+  tbody.innerHTML = '';
+
+  if (!lines.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No punches yet. Clock In to start.</td></tr>';
+    document.getElementById('total').textContent = '0.00';
+    return;
+  }
+
+  let totalMs = 0;
+  const parsed = lines.map(parseLine);
+
+  parsed.forEach(({ dir, ts }, i) => {
+    const tr = document.createElement('tr');
+    tr.dataset.index = i;
+
+    // Badge
+    let badgeHtml;
+    if (dir === 'IN')       badgeHtml = '<span class="badge badge-in">IN</span>';
+    else if (dir === 'OUT') badgeHtml = '<span class="badge badge-out">OUT</span>';
+    else                    badgeHtml = '<span class="badge badge-unknown">?</span>';
+
+    // Timestamp cell — display span + hidden edit span
+    const tsCell = `
+      <td>
+        <span class="ts-display">${ts}</span>
+        <span class="ts-edit">
+          <input class="ts-input" type="text" value="${ts}" placeholder="${ts}"
+            onkeydown="if(event.key==='Enter'){saveEdit(${i})} else if(event.key==='Escape'){cancelEdit(${i})}">
+          <button class="btn-confirm" title="Save" onclick="saveEdit(${i})">✓</button>
+        </span>
+      </td>`;
+
+    // Action buttons
+    const actions = `
+      <td>
+        <span class="row-actions">
+          <button class="btn-edit" title="Edit timestamp" onclick="startEdit(${i})">✏</button>
+          <button class="btn-delete" title="Delete entry" onclick="deleteLine(${i})">🗑</button>
+        </span>
+      </td>`;
+
+    tr.innerHTML = `<td>${i + 1}</td><td>${badgeHtml}</td>${tsCell}${actions}`;
+    tbody.appendChild(tr);
+
+    // Total: pair positions
+    if (i % 2 === 1) {
+      totalMs += parseTS(parsed[i].ts) - parseTS(parsed[i - 1].ts);
+    }
+  });
+
+  document.getElementById('total').textContent = (totalMs / 36e5).toFixed(2);
+}
+</script>
+
+</body>
+</html>

@@ -266,6 +266,20 @@ body {
 .proj-title-link {
     text-decoration: none;
     color: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.title-link-tick {
+    font-size: 10px;
+    color: var(--accent-theme);
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.proj-title-link:hover .title-link-tick {
+    color: var(--theme-hover);
+    transform: translateX(2px);
 }
 
 .proj-title-link:hover h2 {

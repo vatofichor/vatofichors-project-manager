@@ -1,3 +1,5 @@
+Timestamp: 2026-08-25T01:49:44Z
+
 # Layout & Component Architecture Specification (`layout_and_component_spec.md`)
 
 This specification defines the unified front-end layout taxonomy, UI component conventions, design token system, partial template contracts, and responsive grid behaviors for `vatofichors-project-manager`.

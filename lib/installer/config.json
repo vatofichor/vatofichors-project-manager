@@ -7,7 +7,7 @@
   "border_color": "#2b303c",
   "accent_theme": "#39c5bb",
   "theme_hover": "#4ae0d5",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "theme": "dark-retro",
   "target_root_dir": [
     "./test_projects_repo",

@@ -1,3 +1,5 @@
+Timestamp: 2026-08-25T01:49:44Z
+
 # Installer & Environment Specification (`installer_and_environment_spec.md`)
 
 This specification defines the host environment requirements, portable PHP 5 fallback architecture, installation pipeline, launcher runtime hooking, uninstaller isolation boundaries, and `.gitattributes` line-ending rules for `vatofichors-project-manager`.

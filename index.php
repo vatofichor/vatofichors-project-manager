@@ -26,7 +26,7 @@ if (!file_exists($configFile)) {
         'theme_hover' => '#4ae0d5',
         'categories' => ['ALL', 'PROJECTS', 'APPS', 'TOOLS', 'LIBRARIES', 'PACKAGES', 'TEMPLATES', 'META', 'OPEN SOURCE', 'PROPRIETARY'],
         'statuses' => ['ALL', 'Active', 'WIP', 'Inactive', 'Closed', 'Maintenance', 'Archived'],
-        'version' => '1.0.0',
+        'version' => '1.5.0',
         'target_root_dir' => ['D:/Dev'],
         'ignore_hidden_dirs' => true
     ], JSON_PRETTY_PRINT));
@@ -119,6 +119,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pool = new PoolProjects(__DIR__);
         $report = $pool->run();
         echo json_encode(['success' => true, 'report' => $report]);
+        exit;
+    }
+    if ($action === 'get_config') {
+        $configData = json_decode(@file_get_contents($configFile), true) ?: [];
+        echo json_encode(['success' => true, 'config' => $configData]);
+        exit;
+    }
+    if ($action === 'update_config') {
+        $rawCfg = $input['config'] ?? [];
+        if (!is_array($rawCfg)) {
+            echo json_encode(['success' => false, 'error' => 'Invalid configuration data.']);
+            exit;
+        }
+        $cleanCfg = [
+            'app_name' => (string)($rawCfg['app_name'] ?? 'PROJECT MANAGER'),
+            'title' => (string)($rawCfg['title'] ?? 'Dev'),
+            'subtitle' => (string)($rawCfg['subtitle'] ?? 'vatofichors dev repo'),
+            'logo_emoticon' => (string)($rawCfg['logo_emoticon'] ?? '[>_<]'),
+            'logo_color' => (string)($rawCfg['logo_color'] ?? '#00f0ff'),
+            'border_color' => (string)($rawCfg['border_color'] ?? '#2b303c'),
+            'accent_theme' => (string)($rawCfg['accent_theme'] ?? '#39c5bb'),
+            'theme_hover' => (string)($rawCfg['theme_hover'] ?? '#4ae0d5'),
+            'version' => (string)($rawCfg['version'] ?? '1.5.0'),
+            'theme' => (string)($rawCfg['theme'] ?? 'dark-retro'),
+            'target_root_dir' => array_values(array_filter(array_map('trim', (array)($rawCfg['target_root_dir'] ?? [])))),
+            'scan_depth' => max(1, (int)($rawCfg['scan_depth'] ?? 3)),
+            'ignore_hidden_dirs' => (bool)($rawCfg['ignore_hidden_dirs'] ?? true),
+            'categories' => array_values(array_filter(array_map('trim', (array)($rawCfg['categories'] ?? [])))),
+            'statuses' => array_values(array_filter(array_map('trim', (array)($rawCfg['statuses'] ?? [])))),
+            'ignore_dirs' => array_values(array_filter(array_map('trim', (array)($rawCfg['ignore_dirs'] ?? []))))
+        ];
+        $saved = file_put_contents($configFile, json_encode($cleanCfg, JSON_PRETTY_PRINT));
+        if ($saved !== false) {
+            echo json_encode(['success' => true, 'message' => 'Configuration updated successfully.', 'config' => $cleanCfg]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to write config.json']);
+        }
+        exit;
+    }
+    if ($action === 'reset_config') {
+        $defaultConfigFile = __DIR__ . '/lib/installer/config.json';
+        if (!file_exists($defaultConfigFile)) {
+            echo json_encode(['success' => false, 'error' => 'Default installer config not found.']);
+            exit;
+        }
+        $defaultContent = file_get_contents($defaultConfigFile);
+        $copied = file_put_contents($configFile, $defaultContent);
+        if ($copied !== false) {
+            $defaultCfg = json_decode($defaultContent, true) ?: [];
+            echo json_encode(['success' => true, 'message' => 'Configuration reset to installer defaults.', 'config' => $defaultCfg]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to reset config.json']);
+        }
         exit;
     }
 }
