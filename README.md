@@ -24,7 +24,23 @@ A portable, zero-dependency, environment-agnostic PHP project management dashboa
 
 ---
 
-Needs new screenshots..
+## Screenshots
+
+### Home Dashboard
+![Project Manager Home Dashboard](dev/readme-screenshots/projectmanager-home-dt.png)
+*Home route with active projects loaded (Desktop View)*
+
+---
+
+### Project Detail & Task Tracking
+![Project Task Lists](dev/readme-screenshots/projectmanager-project-tasklists.png)
+*Interactive project task list and real-time completion status*
+
+---
+
+### Admin Workspace & Config Editor
+![Admin Config Editor](dev/readme-screenshots/projectmanager-admin-configedit.png)
+*Admin workspace configuration editor*
 
 ---
 
